@@ -42,14 +42,14 @@
           <section>
             <h2>CATEGORIAS</h2>
             <ul>
-              <li style="color: #00ffff" class="fragment">Criacionais</li>
-              <li style="color: #7fff00" class="fragment">Estruturais</li>
-              <li style="color: #ff00ff" class="fragment">Comportamentais</li>
+              <li style="color: #fefc92" class="fragment">Criacionais</li>
+              <li style="color: #c3fed5" class="fragment">Estruturais</li>
+              <li style="color: #ffa597" class="fragment">Comportamentais</li>
             </ul>
           </section>
           <section
             data-transition="slide"
-            data-background="#00ffff"
+            data-background="#fefc92"
             data-background-transition="zoom"
           >
             <h3>Criacionais</h3>
@@ -60,7 +60,7 @@
           </section>
           <section
             data-transition="slide"
-            data-background="#7fff00"
+            data-background="#c3fed5"
             data-background-transition="zoom"
           >
             <h3>Estruturais</h3>
@@ -71,13 +71,13 @@
           </section>
           <section
             data-transition="slide"
-            data-background="#ff00ff"
+            data-background="#ffa597"
             data-background-transition="zoom"
           >
             <h3>Comportamentais</h3>
             <p class="fragment">
               Cuidam da comunicação eficiente e da assinalação de
-              responsabilidades entre objetos. categorias
+              responsabilidades entre objetos.
             </p>
           </section>
         </section>
@@ -183,20 +183,21 @@
             criação para todos os produtos que fazem parte da família
           </h6>
         </section>
-        <section data-auto-animate>
-          <pre
-            data-id="code-animation-factory"
-          ><code class="hljs javascript" data-trim><script type="text/template">
+        <section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim><script type="text/template">
 								interface OsFactory {
 										public function createButton(): Button;
 										public function createInput(): Input;
 								}
 							</script></code></pre>
-        </section>
-        <section data-auto-animate>
-          <pre
-            data-id="code-animation-factory"
-          ><code class="hljs javascript" data-trim data-line-numbers="6-14|16-24|26-34"><script type="text/template">
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="6-14|16-24|26-34"><script type="text/template">
 interface OsFactory {
 	public function createButton(): Button;
 	public function createInput(): Input;
@@ -232,9 +233,181 @@ class MacOSFactory  implements OsFactory {
 	}
 }
 					</script></code></pre>
+          </section>
         </section>
         <section>
-          <p>pos e contras</p>
+          <section>
+            <h2 style="color: green">Vantagens</h2>
+            <ul>
+              <li class="fragment">
+                Você pode ter certeza que os produtos que você obtém de uma
+                fábrica são compatíveis entre si.
+              </li>
+              <li class="fragment">Princípio de responsabilidade única.</li>
+              <li class="fragment">
+                Princípio aberto/fechado, ou seja, você pode introduzir novas
+                variantes de produtos sem quebrar o código cliente existente.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h2 style="color: red">Desvantagens</h2>
+            <ul>
+              <li class="fragment">
+                Dificuldade maior em adicionar novos tipos de produtos.
+              </li>
+              <li class="fragment">
+                O código pode tornar-se mais complicado do que deveria ser, uma
+                vez que muitas novas interfaces e classes são introduzidas junto
+                com o padrão.
+              </li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <h3>FACADE</h3>
+          <p class="fragment">
+            É um padrão de projeto estrutural que fornece uma interface
+            simplificada para uma biblioteca, um framework, ou qualquer conjunto
+            complexo de classes.
+          </p>
+        </section>
+        <section>
+          <p>Imagine que estamos desenvolvendo uma loja virtual.</p>
+        </section>
+        <section>
+          <p>Para realizar o pedido basico, precisamos:</p>
+          <ul>
+            <li class="fragment">Verificar o cliente</li>
+            <li class="fragment">Buscar o produto</li>
+            <li class="fragment">Criar o pedido</li>
+          </ul>
+        </section>
+        <section data-auto-animate>
+          <pre
+            data-id="code-animation-factory"
+          ><code class="hljs javascript" data-trim data-line-numbers="1-7|9-13|15-22"><script type="text/template">
+<?php 
+
+class Customer {
+	public function getCustomer($id) {
+		echo "Buscando cliente com ID $id". PHP_EOL;
+	}
+}
+
+class Product {
+	public function getProduct($code) {
+		echo "Buscando produto com código $code" .PHP_EOL
+	}
+}
+
+class Order {
+	public function createOrder($product, $customer) {
+		echo `
+			Criando pedido para o product 
+			{$produto} com o cliente {$customer}
+		`. PHP_EOL;
+	}
+}
+
+
+	</script></code></pre>
+        </section>
+
+        <section>
+          <section>
+            <p>Fazer o pedido sem ultilizar o facade</p>
+          </section>
+
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="1-5|7-8|10-11|13-14"><script type="text/template">
+													<?php 
+
+														require_once('Product.php'); 
+														require_once('Client.php'); 
+														require_once('Order.php'); 
+															
+														$product = new Product(); 
+														$product->getProduct(1000021);
+
+														$customer = new Customer();
+														$customer->getCustomer(123);
+
+														$order = new Order(); 
+														$order->createOrder($product, $customer); 
+			</script></code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <p>Fazer o pedido ultilizando o facade</p>
+          </section>
+          <section data-auto-animate>
+            <p>Fazer o pedido ultilizando o facade</p>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="3|5-7|9-14|16-21"><script type="text/template">
+<?php 
+ 
+	class Store 
+	{ 
+			private $product; 
+			private $client; 
+			private $order; 
+
+			public function __construct() 
+			{ 
+					$this->product = new Product(); 
+					$this->client = new Client(); 
+					$this->order = new Order(); 
+			} 
+
+			public function newOrder($codeProduct, $idClient) 
+			{ 
+					$this->product->searchProduct($codeProduct); 
+					$this->client->searchClient($idClient); 
+					$this->order->createOrder($codeProduct, $idClient); 
+			} 
+	}
+			</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="3|5-6"><script type="text/template">
+														<?php 
+
+															require_once('Store.php'); 
+																
+															$store = new Store(); 
+															$store->newOrder('00100110',1);
+	</script></code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2 style="color: green">Vantagens</h2>
+            <ul>
+              <li class="fragment">Isola a complexidade do código.</li>
+              <li class="fragment">Facilita a manutenção do sistema.</li>
+              <li class="fragment">
+                Cria pontos de entrada para camadas da aplicação e serviços de
+                terceiros.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h2 style="color: red">Desvantagens</h2>
+            <ul>
+              <li class="fragment">
+                Uma classe que ultiliza o facade pode se tornar um “objeto deus”
+                acoplado a todas as classes de uma aplicação.
+              </li>
+            </ul>
+          </section>
         </section>
       </div>
     </div>
