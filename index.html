@@ -303,10 +303,10 @@ class Product {
 
 class Order {
 	public function createOrder($product, $customer) {
-		echo `
+		echo '
 			Criando pedido para o product 
 			{$produto} com o cliente {$customer}
-		`. PHP_EOL;
+		'. PHP_EOL;
 	}
 }
 
