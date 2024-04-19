@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>DESIGN PATTERNS</title>
+
+    <link rel="stylesheet" href="../dist/reset.css" />
+    <link rel="stylesheet" href="../dist/reveal.css" />
+    <link rel="stylesheet" href="../dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="../plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>DESIGN PATTERNS</h2>
+          <h1 class="fragment">ABSTRACT FACTORY</h1>
+          <p class="fragment">&</p>
+          <h1 class="fragment">FACADE</h1>
+        </section>
+        <section>
+          <section>
+            <h1>O que é</h1>
+            <h1>design patterns ?</h1>
+          </section>
+          <section>
+            <h3>
+              Design patterns, traduzido Padrões de projetos, são soluções para
+              problemas comuns em projetos de software e que independem da
+              linguagem utilizada.
+            </h3>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>CATEGORIAS</h2>
+            <ul>
+              <li style="color: #fefc92" class="fragment">Criacionais</li>
+              <li style="color: #c3fed5" class="fragment">Estruturais</li>
+              <li style="color: #ffa597" class="fragment">Comportamentais</li>
+            </ul>
+          </section>
+          <section
+            data-transition="slide"
+            data-background="#fefc92"
+            data-background-transition="zoom"
+          >
+            <h3>Criacionais</h3>
+            <p class="fragment">
+              Fornecem mecanismos de criação de objetos que aumentam a
+              flexibilidade e a reutilização de código.
+            </p>
+          </section>
+          <section
+            data-transition="slide"
+            data-background="#c3fed5"
+            data-background-transition="zoom"
+          >
+            <h3>Estruturais</h3>
+            <p class="fragment">
+              Explicam como montar objetos e classes em estruturas maiores,
+              enquanto ainda mantém as estruturas flexíveis e eficientes.
+            </p>
+          </section>
+          <section
+            data-transition="slide"
+            data-background="#ffa597"
+            data-background-transition="zoom"
+          >
+            <h3>Comportamentais</h3>
+            <p class="fragment">
+              Cuidam da comunicação eficiente e da assinalação de
+              responsabilidades entre objetos.
+            </p>
+          </section>
+        </section>
+        <section>
+          <h3>ABSTRACT FACTORY</h3>
+          <p class="fragment">
+            Este padrão permite a criação de famílias de objetos relacionados ou
+            dependentes por meio de uma única interface e sem que a classe
+            concreta seja especificada.
+          </p>
+        </section>
+        <section>
+          <section>
+            <p>
+              Imagine q estamos desenvolvendo um aplicativo que contenha botões
+              e inputs que precisam ter estilos diferentes para cada sistema
+              operacional.
+            </p>
+          </section>
+          <section>
+            <p>
+              A primeira coisa que o padrão Abstract Factory sugere é declarar
+              explicitamente interfaces para cada produto distinto da família.
+            </p>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation"
+            ><code class="hljs javascript" data-trim><script type="text/template">
+											interface Button {
+													public function render(): string;
+											}
+										</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation"
+            ><code class="hljs javascript" data-trim  data-line-numbers="5-9|11-15|17-21" ><script type="text/template">
+										interface Button {
+												public function render(): string;
+										}
+
+										class WindowsButton implements Button {
+												public function render(): string {
+														return "Botão do Windows renderizado.";
+												}
+										}
+
+										class LinuxButton implements Button {
+												public function render(): string {
+														return "Botão do Linux renderizado.";
+												}
+										}
+
+										class MacOSButton implements Button {
+												public function render(): string {
+														return "Botão do macOS renderizado.";
+												}
+										}
+									</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation"
+            ><code class="hljs javascript" data-trim><script type="text/template">
+										interface Input {
+												public function render(): string;
+										}
+									</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation"
+            ><code class="hljs javascript" data-trim  data-line-numbers="5-9|11-15|17-21" ><script type="text/template">
+									interface Input {
+											public function render(): string;
+									}
+
+									class WindowsInput {
+											public function render(): string {
+													return "Input do Windows renderizado.";
+											}
+									}
+
+									class LinuxInput {
+											public function render(): string {
+													return "Input do Linux renderizado.";
+											}
+									}
+
+									class MacOSInput {
+											public function render(): string {
+													return "Input do macOS renderizado.";
+											}
+									}
+								</script></code></pre>
+          </section>
+        </section>
+        <section>
+          <h5>O próximo passo é declarar a fábrica abstrata...</h5>
+          <h6 class="fragment">
+            Que nada mais é do que uma interface com uma lista de métodos de
+            criação para todos os produtos que fazem parte da família
+          </h6>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim><script type="text/template">
+								interface OsFactory {
+										public function createButton(): Button;
+										public function createInput(): Input;
+								}
+							</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="6-14|16-24|26-34"><script type="text/template">
+interface OsFactory {
+	public function createButton(): Button;
+	public function createInput(): Input;
+}
+
+class WindowsFactory implements OsFactory {
+	createButton() {
+		return new WindowsButton();
+	}
+
+	createInput() {
+		return new WindowsInput();
+	}
+}
+
+class LinuxFactory implements OsFactory {
+	createButton() {
+		return new LinuxButton();
+	}
+
+	createInput() {
+		return new LinuxInput();
+	}
+}
+
+class MacOSFactory  implements OsFactory {
+	createButton() {
+		return new MacOSButton();
+	}
+
+	createInput() {
+		return new MacOSInput();
+	}
+}
+					</script></code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2 style="color: green">Vantagens</h2>
+            <ul>
+              <li class="fragment">
+                Você pode ter certeza que os produtos que você obtém de uma
+                fábrica são compatíveis entre si.
+              </li>
+              <li class="fragment">Princípio de responsabilidade única.</li>
+              <li class="fragment">
+                Princípio aberto/fechado, ou seja, você pode introduzir novas
+                variantes de produtos sem quebrar o código cliente existente.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h2 style="color: red">Desvantagens</h2>
+            <ul>
+              <li class="fragment">
+                Dificuldade maior em adicionar novos tipos de produtos.
+              </li>
+              <li class="fragment">
+                O código pode tornar-se mais complicado do que deveria ser, uma
+                vez que muitas novas interfaces e classes são introduzidas junto
+                com o padrão.
+              </li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <h3>FACADE</h3>
+          <p class="fragment">
+            É um padrão de projeto estrutural que fornece uma interface
+            simplificada para uma biblioteca, um framework, ou qualquer conjunto
+            complexo de classes.
+          </p>
+        </section>
+        <section>
+          <p>Imagine que estamos desenvolvendo uma loja virtual.</p>
+        </section>
+        <section>
+          <p>Para realizar o pedido basico, precisamos:</p>
+          <ul>
+            <li class="fragment">Verificar o cliente</li>
+            <li class="fragment">Buscar o produto</li>
+            <li class="fragment">Criar o pedido</li>
+          </ul>
+        </section>
+        <section data-auto-animate>
+          <pre
+            data-id="code-animation-factory"
+          ><code class="hljs javascript" data-trim data-line-numbers="1-7|9-13|15-22"><script type="text/template">
+<?php 
+
+class Customer {
+	public function getCustomer($id) {
+		echo "Buscando cliente com ID $id". PHP_EOL;
+	}
+}
+
+class Product {
+	public function getProduct($code) {
+		echo "Buscando produto com código $code" .PHP_EOL
+	}
+}
+
+class Order {
+	public function createOrder($product, $customer) {
+		echo '
+			Criando pedido para o product 
+			{$produto} com o cliente {$customer}
+		'. PHP_EOL;
+	}
+}
+
+
+	</script></code></pre>
+        </section>
+
+        <section>
+          <section>
+            <p>Fazer o pedido sem ultilizar o facade</p>
+          </section>
+
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="1-5|7-8|10-11|13-14"><script type="text/template">
+													<?php 
+
+														require_once('Product.php'); 
+														require_once('Client.php'); 
+														require_once('Order.php'); 
+															
+														$product = new Product(); 
+														$product->getProduct(1000021);
+
+														$customer = new Customer();
+														$customer->getCustomer(123);
+
+														$order = new Order(); 
+														$order->createOrder($product, $customer); 
+			</script></code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <p>Fazer o pedido ultilizando o facade</p>
+          </section>
+          <section data-auto-animate>
+            <p>Fazer o pedido ultilizando o facade</p>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="3|5-7|9-14|16-21"><script type="text/template">
+<?php 
+ 
+	class Store 
+	{ 
+			private $product; 
+			private $client; 
+			private $order; 
+
+			public function __construct() 
+			{ 
+					$this->product = new Product(); 
+					$this->client = new Client(); 
+					$this->order = new Order(); 
+			} 
+
+			public function newOrder($codeProduct, $idClient) 
+			{ 
+					$this->product->searchProduct($codeProduct); 
+					$this->client->searchClient($idClient); 
+					$this->order->createOrder($codeProduct, $idClient); 
+			} 
+	}
+			</script></code></pre>
+          </section>
+          <section data-auto-animate>
+            <pre
+              data-id="code-animation-factory"
+            ><code class="hljs javascript" data-trim data-line-numbers="3|5-6"><script type="text/template">
+														<?php 
+
+															require_once('Store.php'); 
+																
+															$store = new Store(); 
+															$store->newOrder('00100110',1);
+	</script></code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2 style="color: green">Vantagens</h2>
+            <ul>
+              <li class="fragment">Isola a complexidade do código.</li>
+              <li class="fragment">Facilita a manutenção do sistema.</li>
+              <li class="fragment">
+                Cria pontos de entrada para camadas da aplicação e serviços de
+                terceiros.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h2 style="color: red">Desvantagens</h2>
+            <ul>
+              <li class="fragment">
+                Uma classe que ultiliza o facade pode se tornar um “objeto deus”
+                acoplado a todas as classes de uma aplicação.
+              </li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="../dist/reveal.js"></script>
+    <script src="../plugin/notes/notes.js"></script>
+    <script src="../plugin/markdown/markdown.js"></script>
+    <script src="../plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
