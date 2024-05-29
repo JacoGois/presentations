@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Tailwind CSS</title>
+
+    <link rel="stylesheet" href="../dist/reset.css" />
+    <link rel="stylesheet" href="../dist/reveal.css" />
+    <link rel="stylesheet" href="../dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="../plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>O que é</h2>
+          <h1>Tailwind CSS?</h1>
+        </section>
+        <section>
+          <section>
+            <h2>Definição</h2>
+            <p class="fragment">
+              Tailwind CSS é um framework de CSS utilitário que oferece classes
+              prontas para estilizar elementos diretamente no HTML.
+            </p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Como Funciona?</h2>
+          </section>
+          <section>
+            <h3>
+              Imagine que vamos desenvolver algo que tem essa estilização:
+            </h3>
+            <img
+              src="../assets/tailwind/button.png"
+              class="fragment"
+              style="margin-left: auto; margin-right: auto"
+            />
+          </section>
+          <section>
+            <h4>Sem tailwind:</h4>
+            <pre class="fragment">
+<code data-line-numbers="1-9"><style>
+  .btn {
+    background-color: black;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+  }
+</style>
+</code></pre>
+            <pre
+              class="fragment"
+            ><code data-line-numbers="2"><button class="btn">Click me</button>
+</code></pre>
+          </section>
+          <section>
+            <h4>Com tailwind:</h4>
+            <pre
+              class="fragment"
+            ><code data-line-numbers="1-3"><button class="bg-black text-white p-2 rounded">
+  Click me
+</button>
+</code></pre>
+          </section>
+        </section>
+        <section>
+          <h3>Como instalar o Tailwind nos nossos projetos?</h3>
+          <p class="fragment">
+            Basicamente colar isso na tag head do nosso projeto:
+          </p>
+          <pre
+            class="fragment"
+          ><code data-line-numbers="1"><script src="https://cdn.tailwindcss.com"></script>
+</code></pre>
+        </section>
+        <section>
+          <h2>Principais Vantagens</h2>
+          <ul>
+            <li style="color: #fefc92" class="fragment">Facilidade de uso</li>
+            <li style="color: #c3fed5" class="fragment">Alta personalização</li>
+            <li style="color: #ffa597" class="fragment">
+              Rapidez no desenvolvimento
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2 style="color: red">Desvantagens</h2>
+          <ul>
+            <li class="fragment">
+              Pode resultar em HTML muito carregado de classes.
+            </li>
+            <li class="fragment">
+              Necessita de conhecimento prévio das classes utilitárias.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <script src="../dist/reveal.js"></script>
+    <script src="../plugin/notes/notes.js"></script>
+    <script src="../plugin/markdown/markdown.js"></script>
+    <script src="../plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
