@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>React Context</title>
+
+    <link rel="stylesheet" href="../dist/reset.css" />
+    <link rel="stylesheet" href="../dist/reveal.css" />
+    <link rel="stylesheet" href="../dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="../plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>O que é um</h2>
+          <h1>Contexto?</h1>
+        </section>
+        <section>
+          <section>
+            <h2>Definição</h2>
+            <p class="fragment">
+              Contexto é uma maneira de compartilhar dados (como temas,
+              preferências do usuário, ou qualquer outro estado) entre
+              componentes sem precisar passar explicitamente esses dados através
+              de cada nível da árvore de componentes. Pense nele como um
+              "caminho rápido" que permite que qualquer componente acesse os
+              dados de qualquer lugar, sem a necessidade de passar essas
+              informações manualmente por cada componente pai e filho.
+            </p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Como Funciona?</h2>
+          </section>
+          <section>
+            <h3>Imagine que vamos desenvolver algo que tem essa estrutura:</h3>
+            <img
+              src="../assets/reactContext/context.png"
+              class="fragment"
+              style="height: 500px"
+            />
+          </section>
+          <section>
+            <img
+              src="../assets/reactContext/context2.png"
+              style="height: 400px"
+            />
+          </section>
+          <section>
+            <img
+              src="../assets/reactContext/context3.png"
+              style="height: 400px"
+            />
+          </section>
+          <section>
+            <img
+              src="../assets/reactContext/context4.png"
+              style="height: 400px"
+            />
+          </section>
+          <section>
+            <img
+              src="../assets/reactContext/context5.png"
+              style="height: 400px"
+            />
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Como podemos resolver isso de forma eficiente?</h1>
+          </section>
+          <section>
+            <h3>
+              É cumpade, isso é um dos casos classicos de uso de um gerenciador
+              de estado, como o Context
+            </h3>
+          </section>
+          <section>
+            <img src="../assets/reactContext/provider.png" />
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="../dist/reveal.js"></script>
+    <script src="../plugin/notes/notes.js"></script>
+    <script src="../plugin/markdown/markdown.js"></script>
+    <script src="../plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
