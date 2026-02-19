@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>DUB Architecture</title>
+
+    <link rel="stylesheet" href="../dist/reset.css" />
+    <link rel="stylesheet" href="../dist/reveal.css" />
+    <link rel="stylesheet" href="../dist/theme/black.css" />
+    <link rel="stylesheet" href="../plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h3>DUB Architecture</h3>
+          <h1>Modular, resilient, scalable by design</h1>
+          <p>How I structured Dev Utility Box to scale apps safely</p>
+        </section>
+
+        <section>
+          <h2>Engineering challenge</h2>
+          <p>Most internal toolboxes grow fast and degrade quickly:</p>
+          <ul>
+            <li class="fragment">tight coupling between shell and app logic</li>
+            <li class="fragment">shared mutable state across tools</li>
+            <li class="fragment">one bug can break the whole workspace</li>
+            <li class="fragment">adding a new app requires touching many files</li>
+          </ul>
+          <p class="fragment">
+            DUB architecture goal: <strong>high feature velocity with low blast radius</strong>.
+          </p>
+        </section>
+
+        <section>
+          <h2>Architecture decisions</h2>
+          <ul>
+            <li class="fragment">Typed app registry as platform contract</li>
+            <li class="fragment">Window shell isolated from business features</li>
+            <li class="fragment">Per-instance state + persistence</li>
+            <li class="fragment">Fault isolation with ErrorBoundary per window</li>
+            <li class="fragment">Namespaced i18n per module domain</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>1) App registry as module contract</h3>
+          <pre><code data-line-numbers="1-26">export const createApps = (t) => ({
+  ImageTextLab: {
+    name: t("apps.imageTextLab.name"),
+    shortName: t("apps.imageTextLab.shortName"),
+    icon: FileImage,
+    component: ImageTextLab,
+    maxInstances: 2,
+    minHeight: 500,
+  },
+  SchemaLab: {
+    name: t("apps.schemaLab.name"),
+    shortName: t("apps.schemaLab.shortName"),
+    icon: FileSearch,
+    component: SchemaLab,
+    maxInstances: 3,
+    minHeight: 520,
+  },
+});
+</code></pre>
+          <p class="fragment">
+            New app onboarding is predictable: metadata + component + limits in one place.
+          </p>
+        </section>
+
+        <section>
+          <h3>2) Shell orchestration is decoupled</h3>
+          <pre><code data-line-numbers="1-18">const app = apps[appKey];
+const Component = app.component;
+
+return (
+  &lt;WindowShell
+    id={id}
+    maxWidth={app.maxWidth}
+    maxHeight={app.maxHeight}
+    minHeight={app.minHeight}
+  &gt;
+    &lt;ErrorBoundary appName={app.name}&gt;
+      &lt;Component instanceId={id} /&gt;
+    &lt;/ErrorBoundary&gt;
+  &lt;/WindowShell&gt;
+);
+</code></pre>
+          <p class="fragment">
+            Window lifecycle (focus, drag, resize, maximize/minimize) stays in infra layer.
+          </p>
+        </section>
+
+        <section>
+          <h3>3) Per-instance state isolation</h3>
+          <pre><code data-line-numbers="1-16">export function usePersistentAppStore(instanceId, defaultState) {
+  const storedState = useAppStateStore((s) =&gt; s.appStates[instanceId]);
+  const state = { ...defaultState, ...storedState };
+  const setGlobalState = useAppStateStore((s) =&gt; s.setAppState);
+
+  const setState = (newState) =&gt; {
+    if (typeof newState === "function") {
+      setGlobalState(instanceId, newState(state));
+    } else {
+      setGlobalState(instanceId, newState);
+    }
+  };
+  return [state, setState];
+}
+</code></pre>
+          <p class="fragment">
+            Same app can run multiple windows without state collisions.
+          </p>
+        </section>
+
+        <section>
+          <h3>4) Fault containment with ErrorBoundary</h3>
+          <pre><code data-line-numbers="1-16">class ErrorBoundary extends Component&lt;Props, State&gt; {
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error(`Uncaught error in ${this.props.appName}:`, error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) return fallbackUI;
+    return this.props.children;
+  }
+}
+</code></pre>
+          <p class="fragment">
+            A failure inside one app window does not crash the entire desktop.
+          </p>
+        </section>
+
+        <section>
+          <h3>5) Cross-store composition (window + app + dock)</h3>
+          <pre><code data-line-numbers="1-18">closeApp: (id) =&gt; {
+  const { removeAppState } = useAppStateStore.getState();
+  removeAppState(id);
+
+  set((state) =&gt; {
+    const instance = state.openApps.find((w) =&gt; w.id === id);
+    const remainingApps = state.openApps.filter((w) =&gt; w.id !== id);
+    const { removeFromDock } = useDockStore.getState();
+    if (instance && !remainingApps.some((w) =&gt; w.appKey === instance.appKey)) {
+      removeFromDock(instance.appKey);
+    }
+    return { ...state, openApps: remainingApps };
+  });
+}
+</code></pre>
+          <p class="fragment">
+            Closing a window also cleans persisted app state and dock references.
+          </p>
+        </section>
+
+        <section>
+          <h3>6) i18n by module namespace</h3>
+          <pre><code data-line-numbers="1-8">export function useAppTranslations(appKey: string) {
+  return useTranslations(`apps.${appKey}`);
+}
+
+// Usage inside an app:
+const t = useAppTranslations("schemaLab");
+const title = t("title");
+</code></pre>
+          <p class="fragment">
+            Keeps translation ownership close to each module.
+          </p>
+        </section>
+
+        <section>
+          <h2>Scalability outcomes</h2>
+          <ul>
+            <li class="fragment">Kanban shipped with multi-instance + persisted board state</li>
+            <li class="fragment">Schema Lab added with zero shell rewrite</li>
+            <li class="fragment">Image Studio integrated with same platform contracts</li>
+            <li class="fragment">Lower risk: isolated failures, predictable extension path</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Key technical takeaways</h2>
+          <ul>
+            <li class="fragment">Platform contract first, features second</li>
+            <li class="fragment">State isolation by instanceId</li>
+            <li class="fragment">Error boundaries as resilience boundary</li>
+            <li class="fragment">Composable stores for lifecycle consistency</li>
+            <li class="fragment">Domain i18n for long-term maintainability</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Work in progress</h2>
+          <p>
+            DUB is still under active development and evolving every week.
+            I am continuously improving architecture, UX, and new app modules.
+          </p>
+          <p class="fragment">
+            Thanks to everyone testing, sharing feedback, and helping shape the roadmap.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="../dist/reveal.js"></script>
+    <script src="../plugin/notes/notes.js"></script>
+    <script src="../plugin/markdown/markdown.js"></script>
+    <script src="../plugin/highlight/highlight.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
+
